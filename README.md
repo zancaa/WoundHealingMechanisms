@@ -1,6 +1,6 @@
-# Choosing between models and boundary descriptions in wound healing applications
+# Wound healing mechanisms
 
-This code is used to generate the simulations corresponding to Chapter 5 of my PhD thesis. This code uses Chaste, details provided below. Code in this repository is modified from https://github.com/jmosborne/TissueBoundaries (code developed by Domenic Germano, James Osborne and myself for a paper submitted to the Bulletin of Mathematical Biology).
+This code is used to generate the simulations corresponding to Chapter 5 of my PhD thesis. This code uses Chaste, details provided below. 
 
 ## Chaste
 The code in this repository should run using the core version of Chaste, which can be found [here](https://chaste.cs.ox.ac.uk/trac/wiki), along with documentation on how to install and run simulations. Note that Chaste is only fully supported on Linux/Unix systems, Windows and Mac OS users are encouraged to use [Docker](https://github.com/Chaste/chaste-docker). 
