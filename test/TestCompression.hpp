@@ -53,8 +53,8 @@
  */
 
 static const double M_END_STEADY_STATE = 20.0;
-static const double M_END_TIME = 20.0;
-static const double M_DT_TIME = 0.000001;
+static const double M_END_TIME = 10.0;
+static const double M_DT_TIME = 0.001;
 static const double M_SAMPLE_TIME = 0.1/M_DT_TIME;
 
 // Both Width and Length must be EVEN numbers here
@@ -84,11 +84,11 @@ public:
         unsigned num_param_vals = atof(CommandLineArguments::Instance()->GetStringCorrespondingToOption("-num_param_vals").c_str());
 
         // Set min/max target areas (proxy for compression)
-        double min_cell_target_area = 0.9;
-        double max_cell_target_area = 1.0;
+        double min_cell_target_area = 1.0;
+        double max_cell_target_area = 1.25;
 
         // Loop over parameter values
-        for(unsigned sim_index=1; sim_index < num_param_vals; sim_index++)
+        for(unsigned sim_index=6; sim_index <= 10; sim_index++)
         {    
             std::cout << " Run number " << sim_index << "... \n" << std::flush;   
             // Reseed the random number generator
@@ -102,7 +102,7 @@ public:
 
             // Compression
             {
-                std::string output_directory =  M_HEAD_FOLDER + "/Pre-void/Circle";
+                std::string output_directory =  M_HEAD_FOLDER + "/Pre-void/Smooth";
                 // Load steady state
                 OffLatticeSimulation<2>* p_simulator = CellBasedSimulationArchiver<2, OffLatticeSimulation<2> >::Load(output_directory,M_END_STEADY_STATE);
                 VertexBasedCellPopulation<2>* p_cell_population = static_cast<VertexBasedCellPopulation<2>*>(&(p_simulator->rGetCellPopulation()));
@@ -114,10 +114,10 @@ public:
                 p_simulator->RemoveAllForces();
 
                 std::cout << "Compression \n" << std::flush; 
-                double cell_target_area = min_cell_target_area + (max_cell_target_area - min_cell_target_area) * double(sim_index) / double(num_param_vals);
+                double cell_target_area = (min_cell_target_area + (max_cell_target_area - min_cell_target_area) * double(sim_index) / double(num_param_vals))*0.5*sqrt(3.0);
                 std::stringstream paramAsString;
                 paramAsString << cell_target_area;
-                output_directory =  M_HEAD_FOLDER + "/Circle/Compression/Cell_target_area_" + paramAsString.str();
+                output_directory =  M_HEAD_FOLDER + "/Smooth/Compression/Cell_target_area_" + paramAsString.str();
 
                 /* 
                 * == Post-void == 
