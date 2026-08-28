@@ -55,7 +55,7 @@
 static const double M_END_STEADY_STATE = 20.0;
 static const double M_END_TIME = 5.0;
 static const double M_DT_TIME = 0.001;
-static const double M_SAMPLE_TIME = 100;
+static const double M_SAMPLE_TIME = 1000;
 
 // Both Width and Length must be EVEN numbers here
 static const double M_DOMAIN_WIDTH = 20;
@@ -171,7 +171,28 @@ private:
         }
         
         /* Need to remove the deleted elements and ReMesh
-        */
+         */
+        rMesh.ReMesh();
+
+        // Smooth edges - todo: re-write so can use above method
+        for (VertexMesh<2,2>::NodeIterator node_iter = rMesh.GetNodeIteratorBegin();
+            node_iter != rMesh.GetNodeIteratorEnd();
+            ++node_iter)
+        {
+            unsigned node_index = node_iter->GetIndex();
+            std::set<unsigned> containing_element_indices = node_iter->rGetContainingElementIndices();
+            if (containing_element_indices.size() == 1)
+            {
+                // Get this element
+                unsigned elem_index = (*containing_element_indices.begin());
+
+                VertexElement<2,2>* p_element = rMesh.GetElement(elem_index);
+
+                // Remove node from this element and delete the node
+                p_element->DeleteNode(p_element->GetNodeLocalIndex(node_index));
+                rMesh.DeleteNodePriorToReMesh(node_index);
+            }
+        }
         rMesh.ReMesh();
 
         // Create the vector of nodes that defines the wound element in anti-clockwise order.
@@ -179,6 +200,7 @@ private:
          * only contained in one or two elements.
          */
         std::vector<unsigned> wound_node_indices;
+        std::vector<unsigned> node_in_one_cell_indices;
         std::vector<Node<2>*> wound_nodes;
         for (VertexMesh<2,2>::NodeIterator node_iter = rMesh.GetNodeIteratorBegin();
             node_iter != rMesh.GetNodeIteratorEnd();
@@ -188,8 +210,18 @@ private:
             c_vector<double,2> node_location = node_iter->rGetLocation();
             double x = node_location[0];
             double y = node_location[1];
+            // For a smooth wound (and to ensure that all nodes are in three cells), remove any nodes contained only in one cell
             std::set<unsigned> containing_element_indices = node_iter->rGetContainingElementIndices();
-            if ( (containing_element_indices.size() == 1 || containing_element_indices.size() == 2) &&
+            // if (containing_element_indices.size() == 1)
+            // {
+            //     // Need to delete node from element, then delete from mesh
+            //     // Find the node in the cell... Or is marking the node as deleted enough? Probs not... Actually maybe easier to keep them in
+            //     // then loop over and find them to delete later...
+            //     // node_iter->MarkAsDeleted();
+            //     rMesh.DeleteNodePriorToReMesh(node_index);
+            //     rMesh.RemoveDeletedNodes();
+            // }
+            if(( containing_element_indices.size() == 2) &&
                     (x > 0.75) && (x < (M_PERIODIC_WIDTH - 0.75)) && (y > 0.75) && (y < (M_PERIODIC_HEIGHT - 0.75)) )
             {
                 Node<2>* p_temp_node = rMesh.GetNode(node_index);
@@ -217,7 +249,7 @@ private:
                 unsigned previous_node_local_index = (num_nodes_elem+local_index-1)%num_nodes_elem;
                 Node<2>* p_previous_node = p_element->GetNode(previous_node_local_index);
                 /* If the previous (or clockwise) node is only in one or two elements, then it is the 
-                 * next anti-clockwise node in the wound element.
+                 * next anti-clockwise node in the wound element. For smooth, only add nodes in two elements
                  */ 
                 std::set<unsigned> prev_node_containing_elements = p_previous_node->rGetContainingElementIndices();
                 if ( (prev_node_containing_elements.size() == 1 || prev_node_containing_elements.size() == 2) )
@@ -289,7 +321,7 @@ public:
     // Wound centre force
     void TestCreateWound()
     {
-        std::string output_directory =  M_HEAD_FOLDER + "/Pre-void/Circle";
+        std::string output_directory =  M_HEAD_FOLDER + "/Pre-void/Smooth";
 
         /* 
          * == Pre-void == 
@@ -309,6 +341,8 @@ public:
         // Create tissue
         VertexBasedCellPopulation<2> cell_population(*p_mesh, cells);
         CreateHoleInCellPopulation(cell_population);
+        // Smooth out edges to get nice box domain
+        SmoothVertexMeshEdges(cell_population);
         cell_population.AddCellWriter<CellVolumesWriter>();
 
         // Create simulation from cell population
@@ -327,9 +361,9 @@ public:
         p_force->SetNagaiHondaCellBoundaryAdhesionEnergyParameter(1.0);
         simulator.AddForce(p_force);
 
-        MAKE_PTR(WoundCentreForce<2>, p_centre_force);
-        p_centre_force->SetForceStrength(10.0);
-        simulator.AddForce(p_centre_force);
+        // Add volume tracking modifier
+        MAKE_PTR(VolumeTrackingModifier<2>, p_volume_modifier);
+        simulator.AddSimulationModifier(p_volume_modifier);
 
         // Add target area modifier
         MAKE_PTR(SimpleTargetAreaModifier<2>, p_growth_modifier);
@@ -353,7 +387,7 @@ public:
     void TestCreateWoundCell()
     {
         // Required for purse-string mechanism
-        std::string output_directory =  M_HEAD_FOLDER + "/Pre-voidCell/Circle";
+        std::string output_directory =  M_HEAD_FOLDER + "/Pre-voidCell/Smooth";
 
         /* 
          * == Pre-void == 
@@ -398,6 +432,10 @@ public:
         p_force->SetNagaiHondaCellBoundaryAdhesionEnergyParameter(1.0);
         p_force->SetNagaiHondaCellWoundAdhesionEnergyParameter(1.0);
         simulator.AddForce(p_force);
+
+        // Add volume tracking modifier
+        MAKE_PTR(VolumeTrackingModifier<2>, p_volume_modifier);
+        simulator.AddSimulationModifier(p_volume_modifier);
 
         // Add target area modifier
         MAKE_PTR(SimpleWoundMutantTargetAreaModifier<2>, p_growth_modifier);
