@@ -53,7 +53,7 @@
  */
 
 static const double M_END_STEADY_STATE = 20.0;
-static const double M_END_TIME = 20.0;
+static const double M_END_TIME = 10.0;
 static const double M_DT_TIME = 0.001;
 static const double M_SAMPLE_TIME = 100;
 
@@ -87,11 +87,11 @@ public:
         unsigned num_prolif_sims = atof(CommandLineArguments::Instance()->GetStringCorrespondingToOption("-num_prolif_sims").c_str());
         
         // Contact inhibition levels
-        double min_div_prob = 0.006;
+        double min_div_prob = 0.03;
         double max_div_prob = 0.03;
 
         // Loop over parameter values
-        for(unsigned sim_index=1; sim_index <= 1; sim_index++)
+        for(unsigned sim_index=1; sim_index <= num_param_vals; sim_index++)
         {    
             std::cout << " Run number " << sim_index << "... \n" << std::flush;   
             // Reseed the random number generator
@@ -106,9 +106,9 @@ public:
             // // Cell proliferation
             // // void xTestWoundProliferation()
             {
-                for (unsigned index2 = 0; index2<num_prolif_sims; index2++)
+                for (unsigned index2 = 10; index2<(num_prolif_sims+10); index2++)
                 {
-                    std::string output_directory =  M_HEAD_FOLDER + "/Pre-void/Circle";
+                    std::string output_directory =  M_HEAD_FOLDER + "/Pre-void/Smooth";
                     // Load steady state
                     OffLatticeSimulation<2>* p_simulator = CellBasedSimulationArchiver<2, OffLatticeSimulation<2> >::Load(output_directory,M_END_STEADY_STATE);
                     VertexBasedCellPopulation<2>* p_cell_population = static_cast<VertexBasedCellPopulation<2>*>(&(p_simulator->rGetCellPopulation()));
@@ -126,7 +126,7 @@ public:
                     paramAsString << div_prob;
                     std::stringstream runAsString;
                     runAsString << index2;
-                    output_directory =  M_HEAD_FOLDER + "/Circle/Proliferation/Division_probability_" + paramAsString.str() + "/Run_" + runAsString.str();
+                    output_directory =  M_HEAD_FOLDER + "/Smooth/Proliferation/Division_probability_" + paramAsString.str() + "/Run_" + runAsString.str();
 
                     /* 
                     * == Post-void == 
@@ -141,17 +141,27 @@ public:
                         unsigned elem_index = elem_iter->GetIndex();
                         // Get cell associated with this element
                         CellPtr p_cell = p_cell_population->GetCellUsingLocationIndex(elem_index);
+                        // Stupidly didn't have volume tracking modifier on, so they weren't tracked, this is a dumb
+                        // workaround to be removed
+                        // double cell_volume = p_cell->GetCellData()->GetItem("volume");
+                        // PRINT_VARIABLE(cell_volume)
+                        double cell_volume = p_cell_population->rGetMesh().GetVolumeOfElement(elem_index);
+                        p_cell->GetCellData()->SetItem("volume", cell_volume);
 
                         // For each node we create a cell with our cell-cycle model. 
-                        BernoulliTrialWithContactInhibitionCellCycleModel* p_cc_model = static_cast<BernoulliTrialWithContactInhibitionCellCycleModel*>(p_cell->GetCellCycleModel());
-                        p_cc_model->SetDimension(2);
-                        p_cc_model->SetEquilibriumVolume(sqrt(3.0)/2.0);
-                        p_cc_model->SetQuiescentVolumeFraction(0.8);
-                        p_cc_model->SetStemCellDivisionProbability(div_prob);
-                        p_cc_model->SetStemCellMinimumDivisionAge(0.0);
+                        // BernoulliTrialWithContactInhibitionCellCycleModel* p_cc_model = static_cast<BernoulliTrialWithContactInhibitionCellCycleModel*>(p_cell->GetCellCycleModel());
+                        // NoCellCycleModel* p_cc_model = static_cast<NoCellCycleModel*>(p_cell->GetCellCycleModel());
+                        BernoulliTrialWithContactInhibitionCellCycleModel* p_cell_cycle_model = new BernoulliTrialWithContactInhibitionCellCycleModel();
+                        p_cell_cycle_model->SetDimension(2);
+                        p_cell_cycle_model->SetQuiescentVolumeFraction(0.8);
+                        p_cell_cycle_model->SetEquilibriumVolume(0.5*sqrt(3.0));
+                        p_cell_cycle_model->SetStemCellDivisionProbability(div_prob);
+                        p_cell_cycle_model->SetStemCellMinimumDivisionAge(0.0);
 
+                        p_cell->SetCellCycleModel(p_cell_cycle_model);
                         p_cell->SetCellProliferativeType(p_stem_cell_type);
                         p_cell->SetBirthTime(0.0);
+                        p_cell->InitialiseCellCycleModel();
 
                         // Set Target Area so dont need to use a growth model in vertex simulations
                         p_cell->GetCellData()->SetItem("target area", sqrt(3.0)/2.0);
@@ -161,6 +171,10 @@ public:
                     MAKE_PTR(VoidAreaModifier<2>, voidarea_modifier);
                     voidarea_modifier->SetOutputDirectory(output_directory);
                     p_simulator->AddSimulationModifier(voidarea_modifier);
+
+                    // Add volume tracking modifier
+                    MAKE_PTR(VolumeTrackingModifier<2>, volume_modifier);
+                    p_simulator->AddSimulationModifier(volume_modifier);
 
                     // Create Forces and pass to simulation NOTE : these are not the default ones and chosen to give a stable growing monolayer
                     MAKE_PTR(NagaiHondaForce<2>, p_force);
