@@ -53,7 +53,7 @@
  */
 
 static const double M_END_STEADY_STATE = 20.0;
-static const double M_END_TIME = 20.0;
+static const double M_END_TIME = 10.0;
 static const double M_DT_TIME = 0.001;
 static const double M_SAMPLE_TIME = 100;
 
@@ -88,7 +88,7 @@ public:
         double max_cell_boundary_adhesion = 20.0;
 
         // Loop over parameter values
-        for(unsigned sim_index=1; sim_index < num_param_vals; sim_index++)
+        for(unsigned sim_index=1; sim_index <= num_param_vals; sim_index++)
         {   
             std::cout << " Run number " << sim_index << "... \n" << std::flush;   
             // Reseed the random number generator
@@ -101,7 +101,7 @@ public:
             * Differential adhesion
             */
             {
-                std::string output_directory =  M_HEAD_FOLDER + "/Pre-void/Circle";
+                std::string output_directory =  M_HEAD_FOLDER + "/Pre-void/Smooth";
                 // Load steady state
                 OffLatticeSimulation<2>* p_simulator = CellBasedSimulationArchiver<2, OffLatticeSimulation<2> >::Load(output_directory,M_END_STEADY_STATE);
                 VertexBasedCellPopulation<2>* p_cell_population = static_cast<VertexBasedCellPopulation<2>*>(&(p_simulator->rGetCellPopulation()));
@@ -117,7 +117,7 @@ public:
                 double cell_boundary_adhesion = min_cell_boundary_adhesion + (max_cell_boundary_adhesion - min_cell_boundary_adhesion) * double(sim_index) / double(num_param_vals);
                 std::stringstream paramAsString;
                 paramAsString << cell_boundary_adhesion;
-                output_directory =  M_HEAD_FOLDER + "/Circle/EdgeContractility/CellBoundaryAdhesion_" + paramAsString.str();
+                output_directory =  M_HEAD_FOLDER + "/Smooth/DifferentialAdhesion/CellBoundaryAdhesion_" + paramAsString.str();
 
                 /* 
                 * == Post-void == 
