@@ -26,12 +26,14 @@
 #include "CellVolumesWriter.hpp"
 #include "BoundaryNodeWriter.hpp"
 #include "WoundAreaWriter.hpp"
+#include "CellAppliedForceWriter.hpp"
 
 #include "OffLatticeSimulation.hpp"
 
 #include "NagaiHondaForce.hpp"
 #include "NagaiHondaMutationCellForce.hpp"
 #include "BoundaryNormalForce.hpp"
+#include "BoundaryNormalForceWeighted.hpp"
 #include "WoundCentreForce.hpp"
 
 #include "SimpleTargetAreaModifier.hpp"
@@ -53,7 +55,7 @@
  */
 
 static const double M_END_STEADY_STATE = 20.0;
-static const double M_END_TIME = 20.0;
+static const double M_END_TIME = 10.0;
 static const double M_DT_TIME = 0.001;
 static const double M_SAMPLE_TIME = 0.1/M_DT_TIME;
 
@@ -84,11 +86,11 @@ public:
         unsigned num_param_vals = atof(CommandLineArguments::Instance()->GetStringCorrespondingToOption("-num_param_vals").c_str());
 
         // Normal force
-        double min_normal_force_strength = 2.0;
-        double max_normal_force_strength = 8.0;
+        double min_normal_force_strength = 0.0;
+        double max_normal_force_strength = 10.0;
 
         // Loop over parameter values
-        for(unsigned sim_index=0; sim_index < num_param_vals; sim_index++)
+        for(unsigned sim_index=1; sim_index <= num_param_vals; sim_index++)
         {    
             std::cout << " Run number " << sim_index << "... \n" << std::flush;   
             // Reseed the random number generator
@@ -102,7 +104,7 @@ public:
             // Normal force
             // void xTestWoundNormalForce()
             {
-                std::string output_directory =  M_HEAD_FOLDER + "/Pre-void/Circle";
+                std::string output_directory =  M_HEAD_FOLDER + "/Pre-void/Smooth";
                 // Load steady state
                 OffLatticeSimulation<2>* p_simulator = CellBasedSimulationArchiver<2, OffLatticeSimulation<2> >::Load(output_directory,M_END_STEADY_STATE);
                 VertexBasedCellPopulation<2>* p_cell_population = static_cast<VertexBasedCellPopulation<2>*>(&(p_simulator->rGetCellPopulation()));
@@ -118,7 +120,7 @@ public:
                 double normal_force_strength = min_normal_force_strength + (max_normal_force_strength - min_normal_force_strength) * double(sim_index) / double(num_param_vals); 
                 std::stringstream paramAsString;
                 paramAsString << normal_force_strength;
-                output_directory =  M_HEAD_FOLDER + "/Circle/NormalForce/NormalForceStrength_" + paramAsString.str();
+                output_directory =  M_HEAD_FOLDER + "/Smooth/NormalForceWeighted/NormalForceStrength_" + paramAsString.str();
 
                 /* 
                 * == Post-void == 
@@ -132,7 +134,7 @@ public:
                 p_force->SetNagaiHondaCellBoundaryAdhesionEnergyParameter(1.0);
                 p_simulator->AddForce(p_force);
 
-                MAKE_PTR(BoundaryNormalForce<2>, p_bound_force);
+                MAKE_PTR(BoundaryNormalForceWeighted<2>, p_bound_force);
                 p_bound_force->SetForceStrength(normal_force_strength);
                 p_simulator->AddForce(p_bound_force);
 
@@ -140,6 +142,9 @@ public:
                 MAKE_PTR(VoidAreaModifier<2>, voidarea_modifier);
                 voidarea_modifier->SetOutputDirectory(output_directory);
                 p_simulator->AddSimulationModifier(voidarea_modifier);
+
+                // Track force
+                p_cell_population->AddCellWriter<CellAppliedForceWriter>();
 
                 // Create simulation from cell population
                 p_simulator->SetDt(M_DT_TIME);
