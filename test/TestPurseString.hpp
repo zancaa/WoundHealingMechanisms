@@ -53,8 +53,8 @@
  */
 
 static const double M_END_STEADY_STATE = 20.0;
-static const double M_END_TIME = 20.0;
-static const double M_DT_TIME = 0.0001;
+static const double M_END_TIME = 10.0;
+static const double M_DT_TIME = 0.001;
 static const double M_SAMPLE_TIME = 0.1/M_DT_TIME;
 
 // Both Width and Length must be EVEN numbers here
@@ -84,11 +84,11 @@ public:
         unsigned num_param_vals = atof(CommandLineArguments::Instance()->GetStringCorrespondingToOption("-num_param_vals").c_str());
 
         // Wound cell deformation
-        double min_wound_cell_membrane_energy = 0.4;
+        double min_wound_cell_membrane_energy = 0.0;
         double max_wound_cell_membrane_energy = 2.0;
 
         // Loop over parameter values
-        for(unsigned sim_index=0; sim_index <= num_param_vals; sim_index++)
+        for(unsigned sim_index=1; sim_index <= num_param_vals; sim_index++)
         {   
                 std::cout << " Run number " << sim_index << "... \n" << std::flush;   
                 // Reseed the random number generator
@@ -101,7 +101,7 @@ public:
                 */
                 // Wound cell
                 {
-                    std::string output_directory =  M_HEAD_FOLDER + "/Pre-voidCell/Circle";
+                    std::string output_directory =  M_HEAD_FOLDER + "/Pre-voidCell/Smooth";
                     // Load steady state
                     OffLatticeSimulation<2>* p_simulator = CellBasedSimulationArchiver<2, OffLatticeSimulation<2> >::Load(output_directory,M_END_STEADY_STATE);
                     VertexBasedCellPopulation<2>* p_cell_population = static_cast<VertexBasedCellPopulation<2>*>(&(p_simulator->rGetCellPopulation()));
@@ -117,7 +117,7 @@ public:
                     double wound_cell_membrane_energy = min_wound_cell_membrane_energy + (max_wound_cell_membrane_energy - min_wound_cell_membrane_energy) * double(sim_index)/double(num_param_vals);
                     std::stringstream paramAsString;
                     paramAsString << wound_cell_membrane_energy;
-                    output_directory =  M_HEAD_FOLDER + "/Circle/PurseString/WoundCellMembraneEnergy_" + paramAsString.str();
+                    output_directory =  M_HEAD_FOLDER + "/Smooth/WoundCell/WoundCellMembraneEnergy_" + paramAsString.str();
 
                     /* 
                     * == Post-void == 
