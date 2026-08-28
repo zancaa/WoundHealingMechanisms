@@ -88,7 +88,8 @@ void WoundCentreForce<DIM>::AddForceContribution(AbstractCellPopulation<DIM>& rC
             double x = node_location[0];
             double y = node_location[1];
             std::set<unsigned> containing_element_indices = node_iter->rGetContainingElementIndices();
-            if ( (containing_element_indices.size() == 1 || containing_element_indices.size() == 2) &&
+            // containing_element_indices.size() == 1 || // removing the force from nodes only in one cell
+            if ( (containing_element_indices.size() == 2) &&
                     (x > 0.75) && (x < (p_mesh->GetWidth(0) - 0.75)) && (y > 0.75) && (y < (p_mesh->GetWidth(1) - 0.75)) )
             {
                 all_wound_node_indices.insert(node_index);
@@ -97,9 +98,12 @@ void WoundCentreForce<DIM>::AddForceContribution(AbstractCellPopulation<DIM>& rC
             }
         }
 
-    // Find the centre of the wound - currently not generalisable to multiple wounds
+    // // Find the centre of the wound - currently not generalisable to multiple wounds
     double mean_x_boundary_location = sum_x_locations/all_wound_node_indices.size();
     double mean_y_boundary_location = sum_y_locations/all_wound_node_indices.size();
+
+    // double mean_x_boundary_location = 10.0;
+    // double mean_y_boundary_location = 5*sqrt(3);
 
     /* Add force contribution in the direction of the wound centre to boundary nodes
      * Currently a constant force applied in the direction of the wound centre,
