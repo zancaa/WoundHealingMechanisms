@@ -1,5 +1,5 @@
-Running 1 test--------------------------------------------------------------------------
-[[48906,1],0]: A high-performance Open MPI point-to-point messaging module
+Running 2 tests--------------------------------------------------------------------------
+[[52730,1],0]: A high-performance Open MPI point-to-point messaging module
 was unable to find any relevant network interfaces:
 
 Module: OpenFabrics (openib)
@@ -19,8 +19,11 @@ CWD now: /data/azanca/Workspace/Chaste_dev
  ***** TestInternalVoid.hpp *****
 
 
-Entering TestVertexBasedInternalVoid
-Test elapsed time: 160821s
+Entering TestCreateWound
+Test elapsed time: 4630.43s
+Passed
+Entering TestCreateWoundCell
+Test elapsed time: 5007.95s
 Passed
 OK!
 Chaste warning: in file cell_based/src/population/VertexBasedCellPopulation.cpp at line 245: A Cell is removed without performing a T2 swap. This could leave a void in the mesh.

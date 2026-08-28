@@ -117,8 +117,8 @@ void VoidAreaModifier<DIM>::UpdateAtEndOfOutputTimeStep(AbstractCellPopulation<D
 {
     if(DIM == 2)
     {   
-        bool plot_contour = true;
-        bool plot_initial = true;
+        bool plot_contour = false;
+        bool plot_initial = false;
 
         double pixel_void_area = 0.0;
         double cell_void_area = 0.0;
@@ -146,12 +146,13 @@ void VoidAreaModifier<DIM>::UpdateAtEndOfOutputTimeStep(AbstractCellPopulation<D
             double area_of_pixel = pow(separation_between_pixels,2);
 
             // minus 2 is to ensure we are in the tissue and not detecting gaps due to periodicity from each side
-            int pixel_tissue_width = (rCellPopulation.rGetMesh().GetWidth(0) - 2)/separation_between_pixels;
-            int pixel_tissue_depth = (rCellPopulation.rGetMesh().GetWidth(1) - 2)/separation_between_pixels;
+            unsigned pixel_tissue_width = (rCellPopulation.rGetMesh().GetWidth(0) - 2)/separation_between_pixels;
+            unsigned pixel_tissue_depth = (rCellPopulation.rGetMesh().GetWidth(1) - 2)/separation_between_pixels;
             
-            unsigned pixel_grid[pixel_tissue_width][pixel_tissue_depth];
+            // unsigned pixel_grid[pixel_tissue_width][pixel_tissue_depth];
+            std::vector<std::vector<unsigned>> pixel_grid(pixel_tissue_width,std::vector<unsigned>(pixel_tissue_depth));
 
-            int number_of_pixels_with_cell = 0;
+            // int number_of_pixels_with_cell = 0;
 
             for(unsigned pixel_i = 0; pixel_i<pixel_tissue_width; pixel_i++)
             {

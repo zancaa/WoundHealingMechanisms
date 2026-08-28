@@ -1,0 +1,44 @@
+Running 1 test--------------------------------------------------------------------------
+[[23050,1],0]: A high-performance Open MPI point-to-point messaging module
+was unable to find any relevant network interfaces:
+
+Module: OpenFabrics (openib)
+  Host: osborne-server
+
+Another transport will be used instead, although this may result in
+lower performance.
+
+NOTE: You can disable this warning by setting the MCA parameter
+btl_base_warn_component_unused to 0.
+--------------------------------------------------------------------------
+
+Changing directory from '/data/azanca/Workspace/Chaste_dev/projects/WoundHealingMethods/test/' to '/data/azanca/Workspace/Chaste_dev/'.
+CWD now: /data/azanca/Workspace/Chaste_dev
+
+
+ ***** TestInternalVoid.hpp *****
+
+
+Entering TestVertexBasedInternalVoid
+terminate called after throwing an instance of 'Exception'
+[osborne-server:29474] *** Process received signal ***
+[osborne-server:29474] Signal: Aborted (6)
+[osborne-server:29474] Signal code:  (-6)
+[osborne-server:29474] [ 0] /lib/x86_64-linux-gnu/libc.so.6(+0x3ef10)[0x7fb7d72f8f10]
+[osborne-server:29474] [ 1] /lib/x86_64-linux-gnu/libc.so.6(gsignal+0xc7)[0x7fb7d72f8e87]
+[osborne-server:29474] [ 2] /lib/x86_64-linux-gnu/libc.so.6(abort+0x141)[0x7fb7d72fa7f1]
+[osborne-server:29474] [ 3] /usr/lib/x86_64-linux-gnu/libstdc++.so.6(+0x8c957)[0x7fb7d7ced957]
+[osborne-server:29474] [ 4] /usr/lib/x86_64-linux-gnu/libstdc++.so.6(+0x92ae6)[0x7fb7d7cf3ae6]
+[osborne-server:29474] [ 5] /usr/lib/x86_64-linux-gnu/libstdc++.so.6(+0x92b21)[0x7fb7d7cf3b21]
+[osborne-server:29474] [ 6] /usr/lib/x86_64-linux-gnu/libstdc++.so.6(+0x92d54)[0x7fb7d7cf3d54]
+[osborne-server:29474] [ 7] ../build/optimised/TestInternalVoidRunner(+0x8fe0df)[0x559c9fda20df]
+[osborne-server:29474] [ 8] ../build/optimised/TestInternalVoidRunner(+0x90687b)[0x559c9fdaa87b]
+[osborne-server:29474] [ 9] ../build/optimised/TestInternalVoidRunner(+0x906a38)[0x559c9fdaaa38]
+[osborne-server:29474] [10] ../build/optimised/TestInternalVoidRunner(+0x784155)[0x559c9fc28155]
+[osborne-server:29474] [11] ../build/optimised/TestInternalVoidRunner(+0xb6f445)[0x559ca0013445]
+[osborne-server:29474] [12] ../build/optimised/TestInternalVoidRunner(+0x7aa207)[0x559c9fc4e207]
+[osborne-server:29474] [13] ../build/optimised/TestInternalVoidRunner(+0x3065d9)[0x559c9f7aa5d9]
+[osborne-server:29474] [14] ../build/optimised/TestInternalVoidRunner(+0x28b245)[0x559c9f72f245]
+[osborne-server:29474] [15] /lib/x86_64-linux-gnu/libc.so.6(__libc_start_main+0xe7)[0x7fb7d72dbc87]
+[osborne-server:29474] [16] ../build/optimised/TestInternalVoidRunner(+0x2e955a)[0x559c9f78d55a]
+[osborne-server:29474] *** End of error message ***

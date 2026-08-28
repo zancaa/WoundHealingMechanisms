@@ -1,5 +1,5 @@
 Running 1 test--------------------------------------------------------------------------
-[[48906,1],0]: A high-performance Open MPI point-to-point messaging module
+[[58912,1],0]: A high-performance Open MPI point-to-point messaging module
 was unable to find any relevant network interfaces:
 
 Module: OpenFabrics (openib)
@@ -20,8 +20,13 @@ CWD now: /data/azanca/Workspace/Chaste_dev
 
 
 Entering TestVertexBasedInternalVoid
-Test elapsed time: 160821s
-Passed
-OK!
-Chaste warning: in file cell_based/src/population/VertexBasedCellPopulation.cpp at line 245: A Cell is removed without performing a T2 swap. This could leave a void in the mesh.
-Chaste warning: in file cell_based/src/simulation/numerical_methods/AbstractNumericalMethod.cpp at line 216: Vertices are moving more than half the CellRearrangementThreshold. This could cause elements to become inverted so the motion has been restricted. Use a smaller timestep to avoid these warnings.
+
+Chaste termination: mesh/src/vertex/MutableVertexMesh.cpp:2501: Should have been impossible to reach this line of code
+--------------------------------------------------------------------------
+MPI_ABORT was invoked on rank 0 in communicator MPI_COMM_WORLD
+with errorcode 1.
+
+NOTE: invoking MPI_ABORT causes Open MPI to kill all MPI processes.
+You may or may not see output from other processes, depending on
+exactly when Open MPI kills them.
+--------------------------------------------------------------------------

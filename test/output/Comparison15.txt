@@ -1,0 +1,43 @@
+Running 1 test--------------------------------------------------------------------------
+[[20446,1],0]: A high-performance Open MPI point-to-point messaging module
+was unable to find any relevant network interfaces:
+
+Module: OpenFabrics (openib)
+  Host: osborne-server
+
+Another transport will be used instead, although this may result in
+lower performance.
+
+NOTE: You can disable this warning by setting the MCA parameter
+btl_base_warn_component_unused to 0.
+--------------------------------------------------------------------------
+
+Changing directory from '/data/azanca/Workspace/Chaste_dev/projects/WoundHealingMethods/test/' to '/data/azanca/Workspace/Chaste_dev/'.
+CWD now: /data/azanca/Workspace/Chaste_dev
+
+
+ ***** TestInternalVoid.hpp *****
+
+
+Entering TestVertexBasedInternalVoid
+TestInternalVoidRunner: mesh/src/vertex/MutableVertexMesh.cpp:1800: void MutableVertexMesh<ELEMENT_DIM, SPACE_DIM>::PerformT1Swap(Node<SPACE_DIM>*, Node<SPACE_DIM>*, std::set<unsigned int>&) [with unsigned int ELEMENT_DIM = 2; unsigned int SPACE_DIM = 2]: Assertion `nodeB_local_index == (nodeA_local_index + 1)%(this->mElements[*it]->GetNumNodes())' failed.
+[osborne-server:26358] *** Process received signal ***
+[osborne-server:26358] Signal: Aborted (6)
+[osborne-server:26358] Signal code:  (-6)
+[osborne-server:26358] [ 0] /lib/x86_64-linux-gnu/libc.so.6(+0x3ef10)[0x7fea9a51ff10]
+[osborne-server:26358] [ 1] /lib/x86_64-linux-gnu/libc.so.6(gsignal+0xc7)[0x7fea9a51fe87]
+[osborne-server:26358] [ 2] /lib/x86_64-linux-gnu/libc.so.6(abort+0x141)[0x7fea9a5217f1]
+[osborne-server:26358] [ 3] /lib/x86_64-linux-gnu/libc.so.6(+0x303fa)[0x7fea9a5113fa]
+[osborne-server:26358] [ 4] /lib/x86_64-linux-gnu/libc.so.6(+0x30472)[0x7fea9a511472]
+[osborne-server:26358] [ 5] ../build/optimised/TestInternalVoidRunner(+0x9006c5)[0x55bb9d35f6c5]
+[osborne-server:26358] [ 6] ../build/optimised/TestInternalVoidRunner(+0x900924)[0x55bb9d35f924]
+[osborne-server:26358] [ 7] ../build/optimised/TestInternalVoidRunner(+0x8deecb)[0x55bb9d33decb]
+[osborne-server:26358] [ 8] ../build/optimised/TestInternalVoidRunner(+0x9045dc)[0x55bb9d3635dc]
+[osborne-server:26358] [ 9] ../build/optimised/TestInternalVoidRunner(+0x781d05)[0x55bb9d1e0d05]
+[osborne-server:26358] [10] ../build/optimised/TestInternalVoidRunner(+0xb6d325)[0x55bb9d5cc325]
+[osborne-server:26358] [11] ../build/optimised/TestInternalVoidRunner(+0x7a7db7)[0x55bb9d206db7]
+[osborne-server:26358] [12] ../build/optimised/TestInternalVoidRunner(+0x30316e)[0x55bb9cd6216e]
+[osborne-server:26358] [13] ../build/optimised/TestInternalVoidRunner(+0x28ae05)[0x55bb9cce9e05]
+[osborne-server:26358] [14] /lib/x86_64-linux-gnu/libc.so.6(__libc_start_main+0xe7)[0x7fea9a502c87]
+[osborne-server:26358] [15] ../build/optimised/TestInternalVoidRunner(+0x2e911a)[0x55bb9cd4811a]
+[osborne-server:26358] *** End of error message ***

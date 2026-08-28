@@ -1,0 +1,64 @@
+Running 1 test--------------------------------------------------------------------------
+[[47333,1],0]: A high-performance Open MPI point-to-point messaging module
+was unable to find any relevant network interfaces:
+
+Module: OpenFabrics (openib)
+  Host: osborne-server
+
+Another transport will be used instead, although this may result in
+lower performance.
+
+NOTE: You can disable this warning by setting the MCA parameter
+btl_base_warn_component_unused to 0.
+--------------------------------------------------------------------------
+
+Changing directory from '/data/azanca/Workspace/Chaste_dev/projects/WoundHealingMethods/test/' to '/data/azanca/Workspace/Chaste_dev/'.
+CWD now: /data/azanca/Workspace/Chaste_dev
+
+
+ ***** TestInternalVoid.hpp *****
+
+
+Entering TestProliferation
+ Run number 0... 
+Proliferation 
+Proliferation 
+Proliferation 
+Proliferation 
+Proliferation 
+Proliferation 
+Proliferation 
+Proliferation 
+Proliferation 
+Proliferation 
+ Run number 1... 
+Proliferation 
+Proliferation 
+Proliferation 
+Proliferation 
+Proliferation 
+Proliferation 
+Proliferation 
+TestWoundProliferationRunner: mesh/src/common/MutableElement.cpp:113: void MutableElement<ELEMENT_DIM, SPACE_DIM>::DeleteNode(const unsigned int&) [with unsigned int ELEMENT_DIM = 2; unsigned int SPACE_DIM = 2]: Assertion `rIndex < this->mNodes.size()' failed.
+[osborne-server:37323] *** Process received signal ***
+[osborne-server:37323] Signal: Aborted (6)
+[osborne-server:37323] Signal code:  (-6)
+[osborne-server:37323] [ 0] /lib/x86_64-linux-gnu/libc.so.6(+0x3ef10)[0x7fd426f58f10]
+[osborne-server:37323] [ 1] /lib/x86_64-linux-gnu/libc.so.6(gsignal+0xc7)[0x7fd426f58e87]
+[osborne-server:37323] [ 2] /lib/x86_64-linux-gnu/libc.so.6(abort+0x141)[0x7fd426f5a7f1]
+[osborne-server:37323] [ 3] /lib/x86_64-linux-gnu/libc.so.6(+0x303fa)[0x7fd426f4a3fa]
+[osborne-server:37323] [ 4] /lib/x86_64-linux-gnu/libc.so.6(+0x30472)[0x7fd426f4a472]
+[osborne-server:37323] [ 5] ../build/optimised/TestWoundProliferationRunner(+0x889ba0)[0x56137c387ba0]
+[osborne-server:37323] [ 6] ../build/optimised/TestWoundProliferationRunner(+0x910357)[0x56137c40e357]
+[osborne-server:37323] [ 7] ../build/optimised/TestWoundProliferationRunner(+0x91a64b)[0x56137c41864b]
+[osborne-server:37323] [ 8] ../build/optimised/TestWoundProliferationRunner(+0x91a808)[0x56137c418808]
+[osborne-server:37323] [ 9] ../build/optimised/TestWoundProliferationRunner(+0x797d65)[0x56137c295d65]
+[osborne-server:37323] [10] ../build/optimised/TestWoundProliferationRunner(+0xb5f845)[0x56137c65d845]
+[osborne-server:37323] [11] ../build/optimised/TestWoundProliferationRunner(+0x7bde17)[0x56137c2bbe17]
+[osborne-server:37323] [12] ../build/optimised/TestWoundProliferationRunner(+0x302319)[0x56137be00319]
+[osborne-server:37323] [13] ../build/optimised/TestWoundProliferationRunner(+0x2f0030)[0x56137bdee030]
+[osborne-server:37323] [14] ../build/optimised/TestWoundProliferationRunner(+0x2f6ec5)[0x56137bdf4ec5]
+[osborne-server:37323] [15] ../build/optimised/TestWoundProliferationRunner(+0x28cef3)[0x56137bd8aef3]
+[osborne-server:37323] [16] /lib/x86_64-linux-gnu/libc.so.6(__libc_start_main+0xe7)[0x7fd426f3bc87]
+[osborne-server:37323] [17] ../build/optimised/TestWoundProliferationRunner(+0x2ecb3a)[0x56137bdeab3a]
+[osborne-server:37323] *** End of error message ***

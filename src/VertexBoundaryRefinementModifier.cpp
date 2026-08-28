@@ -1,14 +1,10 @@
 /*
-
 Copyright (c) 2005-2021, University of Oxford.
 All rights reserved.
-
 University of Oxford means the Chancellor, Masters and Scholars of the
 University of Oxford, having an administrative office at Wellington
 Square, Oxford OX1 2JD, UK.
-
 This file is part of Chaste.
-
 Redistribution and use in source and binary forms, with or without
 modification, are permitted provided that the following conditions are met:
  * Redistributions of source code must retain the above copyright notice,
@@ -19,7 +15,6 @@ modification, are permitted provided that the following conditions are met:
  * Neither the name of the University of Oxford nor the names of its
    contributors may be used to endorse or promote products derived from this
    software without specific prior written permission.
-
 THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS"
 AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE
 IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE
@@ -30,19 +25,16 @@ GOODS OR SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION)
 HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT
 LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT
 OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
-
 */
 
 #include "VertexBoundaryRefinementModifier.hpp"
 #include "VertexBasedCellPopulation.hpp"
 
-#include "Debug.hpp"
-
 template<unsigned DIM>
 VertexBoundaryRefinementModifier<DIM>::VertexBoundaryRefinementModifier()
     : AbstractCellBasedSimulationModifier<DIM>(),
-      mMaxEdgeLength(0.10),
-      mMinEdgeLength(0.025) // Note: must be <= mCellRearrangementThreshold
+      mMaxEdgeLength(0.25),
+      mMinEdgeLength(0.0)
 {
 }
 
@@ -88,10 +80,14 @@ void VertexBoundaryRefinementModifier<DIM>::RefineEdges(AbstractCellPopulation<D
             elem_iter != p_mesh->GetElementIteratorEnd();
             ++elem_iter)
         {
+            //unsigned elem_index = elem_iter->GetIndex();
 
+            //unsigned num_nodes = elem_iter->GetNumNodes();
             for (unsigned node_local_index = 0; node_local_index < elem_iter->GetNumNodes(); node_local_index++)
             {
                 unsigned next_node_local_index = (node_local_index+1) % (elem_iter->GetNumNodes());
+
+    //PRINT_3_VARIABLES(node_local_index,next_node_local_index,num_nodes);
 
                 unsigned node_global_index = elem_iter->GetNodeGlobalIndex(node_local_index);
                 unsigned next_node_global_index = elem_iter->GetNodeGlobalIndex(next_node_local_index);
@@ -113,13 +109,12 @@ void VertexBoundaryRefinementModifier<DIM>::RefineEdges(AbstractCellPopulation<D
                             node_b_elem_indices.end(),
                             std::inserter(shared_elements, shared_elements.begin()));
 
-                    // assert(shared_elements.size()>0); //otherwise not in the same element at all 
+                    assert(shared_elements.size()>0); //otherwise not in the same element at all 
 
                     if(shared_elements.size() == 1)
                     {
                         // Here we have a boundary edge so add new node if needed.
                         c_vector<double,DIM> edge = p_mesh->GetVectorFromAtoB(p_node_a->rGetLocation(),p_node_b->rGetLocation());
-                        
                         if (norm_2(edge) > mMaxEdgeLength)
                         {
                             p_mesh->DivideEdge(p_node_a, p_node_b);
@@ -127,33 +122,13 @@ void VertexBoundaryRefinementModifier<DIM>::RefineEdges(AbstractCellPopulation<D
                         } 
                         else if (norm_2(edge) < mMinEdgeLength)
                         {
-                            // TRACE("help");
-                            // Check to make sure we don't delete a node that is a vertex, only a free boundary node
-                            if(node_a_elem_indices.size() >= 2)
-                            {
-                                // Delete node
-                                p_mesh->PerformNodeMerge(p_node_a,p_node_b);
-                                p_node_a->SetAsBoundaryNode(true);
-
-                                recheck_edges = true;
-                            }
-                            else if(node_b_elem_indices.size() >= 2)
-                            {
-                                p_mesh->PerformNodeMerge(p_node_b,p_node_a);
-                                p_node_b->SetAsBoundaryNode(true);
-
-                                recheck_edges = true;
-
-                            }
+                            NEVER_REACHED; // Not implemented yet
                         }   
                     }
                 }
             }
         }
-        p_mesh->ReMesh();
     }
-
-    
 }
 
 
@@ -203,4 +178,3 @@ template class VertexBoundaryRefinementModifier<3>;
 // Serialization for Boost >= 1.36
 #include "SerializationExportWrapperForCpp.hpp"
 EXPORT_TEMPLATE_CLASS_SAME_DIMS(VertexBoundaryRefinementModifier)
-
